@@ -109,7 +109,7 @@ void DestroyHashTable(HashTable* h, int entries){
                 for (int j = 0; j < (h[i].currentBucket->size / sizeof(Value)); ++j) {
                     if (h[i].currentBucket->value[j].name != NULL){
                         free(h[i].currentBucket->value[j].name);
-                        _deleteTree(h[i].currentBucket->value[j].RBTptr,h[i].currentBucket->value[j].TNILL);
+                        DeleteRBTTree(h[i].currentBucket->value[j].RBTptr,h[i].currentBucket->value[j].TNILL);
                         deleteTNILL(h[i].currentBucket->value[j].TNILL);
                     }
                 }
@@ -162,6 +162,10 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
     }else if(country != NULL && virus != NULL) { // diseaseFrequency
         int count = 0;
         Value valueptr = FindPatientHTDisease(h, entries, virus);
+        if(valueptr.name == NULL){
+            printf("ERROR : Disease %s can not be found in records\n", virus);
+            return;
+        }
         printf("Country : %s -> Number of patiants that have %s  : ", country, valueptr.name);
         countPatientsRBTByCountry(valueptr.RBTptr, valueptr.TNILL, &count, date1, date2, country);
         printf("%d\n", count);
@@ -169,6 +173,10 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
     }else{  // diseaseFrequency
         int count = 0;
         Value valueptr = FindPatientHTDisease(h, entries, virus);
+        if(valueptr.name == NULL){
+            printf("ERROR : Disease %s can not be found in records\n", virus);
+            return;
+        }
         printf("Number of patiants that have %s  : ", virus);
         countPatientsRBTByCountry(valueptr.RBTptr, valueptr.TNILL,&count, date1, date2, NULL);
         printf("%d\n", count);
@@ -185,7 +193,6 @@ void allDiseasesByCountry(HashTable *h, int entries, char *date1, char* date2, c
                 for (int j = 0; j < (h[i].currentBucket->size / sizeof(Value)); ++j) {
                     int count = 0;
                     if (h[i].currentBucket->value[j].name != NULL) {
-                        printf("Country : %s\n", h[i].currentBucket->value[j].name);
                         countPatientsRBTByDisease(h[i].currentBucket->value[j].RBTptr, h[i].currentBucket->value[j].TNILL, &count, date1, date2, virus);
                         insert(&Root, count, h[i].currentBucket->value[j].name, NULL);
                     }

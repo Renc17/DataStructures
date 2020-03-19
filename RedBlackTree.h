@@ -7,7 +7,7 @@
 typedef struct RBTnode
 {
     patientRecord *patientNode;
-    struct tm entryDate;
+    Date entryDate;
     int color;
     struct RBTnode *left, *right, *parent;
 }RBT;
@@ -17,7 +17,9 @@ void LeftRotate(RBT **root,RBT* x, RBT* tn);
 void rightRotate(RBT **root,RBT* x, RBT* tn);
 void insertFixUp(RBT **root,RBT* z, RBT* tn);
 void insert_RBT(RBT **root, RBT** tn, patientRecord* p);
-void _deleteTree(RBT* node ,RBT* tn);
+int compareDate(Date* date1, Date* date2);
+Date convert(char *date);
+void DeleteRBTTree(RBT* node ,RBT* tn);
 void print(RBT* root, RBT* tn);
 void deleteTNILL(RBT* tn);
 void countCurrentPatientsRBT(RBT* root, RBT* tn, int *count);

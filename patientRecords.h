@@ -3,13 +3,19 @@
 
 #include <time.h>
 
+typedef struct {
+    int day;
+    int month;
+    int year;
+}Date;
+
 typedef struct patient{
     int recordId;
     char *name;
     char *surname;
     char *disease;
     char *country;
-    struct tm entryDate;
+    Date entryDate;
     char *exitDate;
 }patientRecord;
 
@@ -28,7 +34,7 @@ char* get_name(patientRecord* v);
 char* get_surname(patientRecord* v);
 char* get_country(patientRecord* v);
 char* get_disease(patientRecord* v);
-struct tm get_entryDate(patientRecord* v);
+Date get_entryDate(patientRecord* v);
 char* get_exitDate(patientRecord* v);
 
 void delete_patient(patientRecord* v);

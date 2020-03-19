@@ -144,15 +144,11 @@ void insert_RBT(RBT **root, RBT** tn, patientRecord* p){
     z->color = 1;
     z->left = z->right = z->parent = *tn;
 
-    time_t  date1;
-    time_t date2 = mktime(&p->entryDate);
-
     RBT* y = *tn;
     RBT* x = *root;
     while(x != *tn){
         y = x;
-        date1 = mktime(&y->entryDate);
-        if(difftime(date1, date2) <= 0){
+        if(compareDate(&(y->entryDate), &(p->entryDate)) <= 0){
             x = x->left;
         }else{
             x = x->right;
@@ -160,11 +156,10 @@ void insert_RBT(RBT **root, RBT** tn, patientRecord* p){
     }
 
     z->parent = y;
-    date1 = mktime(&y->entryDate);
     if(y == *tn){
         *root = z;
     }
-    else if(difftime(date1, date2) < 0) {
+    else if(compareDate(&(y->entryDate), &(p->entryDate)) < 0) {
         y->left = z;
     }else
         y->right = z;
@@ -176,13 +171,35 @@ void insert_RBT(RBT **root, RBT** tn, patientRecord* p){
     insertFixUp(root, z, *tn);
 }
 
-void _deleteTree(RBT* node ,RBT* tn){
+int compareDate(Date* date1, Date* date2){
+    if(date1->year == date2->year){
+        if(date1->month == date2->month){
+            if(date1->day == date2->day){
+                return 0;
+            } else if(date1->day > date2->day){
+                return 1;
+            }else{
+                return -1;
+            }
+        } else if(date1->month > date2->month){
+            return 1;
+        }else {
+            return -1;
+        }
+    } else if(date1->year > date2->year){
+        return 1;
+    }else {
+        return -1;
+    }
+}
+
+void DeleteRBTTree(RBT* node ,RBT* tn){
     if (node == tn){
         return;
     }
 
-    _deleteTree(node->left, tn);
-    _deleteTree(node->right, tn);
+    DeleteRBTTree(node->left, tn);
+    DeleteRBTTree(node->right, tn);
 
     free(node);
 }
@@ -193,7 +210,7 @@ void print(RBT* root, RBT* tn){
         return;
     }
     print(root->left, tn);
-    printf("%d %s\n", root->patientNode->recordId, root->patientNode->name);
+    printf("%d %d %d %d %s\n",root->entryDate.day, root->entryDate.month, root->entryDate.year, root->patientNode->recordId, root->patientNode->name);
     print(root->right, tn);
 }
 
@@ -209,20 +226,20 @@ void countCurrentPatientsRBT(RBT* root, RBT* tn, int *count){
     countCurrentPatientsRBT(root->right, tn,  count);
 }
 
-struct tm convert(char *date){
+Date convert(char *date){
     char* token;
     char skip[2] = "-";
 
     char* d = malloc(sizeof(char)*strlen(date)+1);
     strcpy(d, date);
     token = strtok(d, "\n");
-    struct tm ed;
+    Date ed;
     token = strtok(token, skip);
-    ed.tm_mday = atoi(token);
+    ed.day = atoi(token);
     token = strtok(NULL, skip);
-    ed.tm_mon = atoi(token);
+    ed.month = atoi(token);
     token = strtok(NULL, skip);
-    ed.tm_year = atoi(token);
+    ed.year = atoi(token);
 
     return ed;
 }
@@ -232,21 +249,19 @@ void countPatientsRBTByCountry(RBT* root, RBT* tn, int *count, char* date1, char
         return;
     }
 
-    struct tm Date1 = convert(date1);
-    struct tm Date2 = convert(date2);
-    time_t d2 = mktime(&Date2);
-    time_t d1 = mktime(&Date1);
-    time_t rootDate = mktime(&(root->entryDate));
-
     if(date1 != NULL && date2 != NULL && country == NULL) {
-        if (difftime(rootDate, d2) <= 0  && (difftime(rootDate, d1) >= 0)) {
+        Date d1 = convert(date1);
+        Date d2 = convert(date2);
+        if (compareDate(&(root->entryDate), &d1) >= 0 && compareDate(&(root->entryDate), &d2) <= 0) {
             (*count)++;
            // printf("%s %s\n", root->patientNode->entryDate, root->patientNode->exitDate);
         }
     }else if(date1 == NULL && date2 == NULL){
         (*count)++;
     }else if(date1 != NULL && date2 != NULL) {
-        if ((difftime(rootDate, d2) <= 0) && (difftime(rootDate, d1) >= 0) &&
+        Date d1 = convert(date1);
+        Date d2 = convert(date2);
+        if (compareDate(&(root->entryDate), &d1) >= 0 && (compareDate(&(root->entryDate), &d2) <= 0) &&
             (strcmp(root->patientNode->country, country) == 0)) {
             (*count)++;
         }
@@ -261,18 +276,14 @@ void countPatientsRBTByDisease(RBT* root, RBT* tn, int *count, char* date1, char
         return;
     }
 
-    struct tm Date1 = convert(date1);
-    struct tm Date2 = convert(date2);
-    time_t d2 = mktime(&Date2);
-    time_t d1 = mktime(&Date1);
-    time_t rootDate = mktime(&(root->entryDate));
-
     if(date1 == NULL && date2 == NULL){
         if ((strcmp(root->patientNode->disease, virus) == 0)) {
             (*count)++;
         }
     }else if(date1 != NULL && date2 != NULL) {
-        if (difftime(rootDate, d2) <= 0  && (difftime(rootDate, d1) >= 0) &&
+        Date d1 = convert(date1);
+        Date d2 = convert(date2);
+        if (compareDate(&(root->entryDate), &d1) >= 0 && (compareDate(&(root->entryDate), &d2) <= 0) &&
             (strcmp(root->patientNode->disease, virus) == 0)) {
             (*count)++;
         }
@@ -287,18 +298,14 @@ void countCountryRBT(RBT* root, RBT* tn, int *count, char* date1, char* date2, c
         return;
     }
 
-    struct tm Date1 = convert(date1);
-    struct tm Date2 = convert(date2);
-    time_t d2 = mktime(&Date2);
-    time_t d1 = mktime(&Date1);
-    time_t rootDate = mktime(&(root->entryDate));
-
     if(date1 == NULL && date2 == NULL){
         if ((strcmp(root->patientNode->country, country) == 0)) {
             (*count)++;
         }
     }else if(date1 != NULL && date2 != NULL) {
-        if (difftime(rootDate, d2) <= 0  && (difftime(rootDate, d1) >= 0) &&
+        Date d1 = convert(date1);
+        Date d2 = convert(date2);
+        if (compareDate(&(root->entryDate), &d1) >= 0 && (compareDate(&(root->entryDate), &d2) <= 0) &&
             (strcmp(root->patientNode->country, country) == 0)) {
             (*count)++;
         }

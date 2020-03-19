@@ -28,7 +28,7 @@ char* get_disease(patientRecord* v){
     return v->disease;
 }
 
-struct tm get_entryDate(patientRecord* v){
+Date get_entryDate(patientRecord* v){
     return v->entryDate;
 }
 
@@ -63,20 +63,11 @@ void set_entryDate(patientRecord* v, char* ed){
     t = strtok(ed, "\n");
 
     t = strtok(t, skip);
-    v->entryDate.tm_mday = atoi(t);
+    v->entryDate.day =  atoi(t);
     t = strtok(NULL, skip);
-    v->entryDate.tm_mon = atoi(t);
+    v->entryDate.month = atoi(t);
     t = strtok(NULL, skip);
-    v->entryDate.tm_year = atoi(t);
-
-    v->entryDate.tm_gmtoff = 0;
-    v->entryDate.tm_hour = 0;
-    v->entryDate.tm_min = 0;
-    v->entryDate.tm_sec = 0;
-    v->entryDate.tm_isdst = 0;
-    v->entryDate.tm_wday = 0;
-    v->entryDate.tm_yday = 0;
-    v->entryDate.tm_zone = NULL;
+    v->entryDate.year = atoi(t);
 }
 
 void set_exitDate(patientRecord* v, char* ed){
