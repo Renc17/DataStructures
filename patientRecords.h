@@ -1,5 +1,5 @@
-#ifndef COVID_19_PATIENTRECORDS_H
-#define COVID_19_PATIENTRECORDS_H
+#ifndef _PATIENTRECORDS_H
+#define _PATIENTRECORDS_H
 
 #include <time.h>
 
@@ -39,4 +39,4 @@ char* get_exitDate(patientRecord* v);
 
 void delete_patient(patientRecord* v);
 
-#endif //COVID_19_PATIENTRECORDS_H
+#endif

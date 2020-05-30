@@ -1,5 +1,5 @@
-#ifndef COVID_19_MAXHEAP_H
-#define COVID_19_MAXHEAP_H
+#ifndef _MAXHEAP_H
+#define _MAXHEAP_H
 
 typedef struct hnode{
     int count;
@@ -9,9 +9,19 @@ typedef struct hnode{
     struct hnode *parent;
 }Node;
 
+typedef struct {
+    int size;
+    int current;
+    Node **k;
+}topk;
+
+
 void swapValues(Node **p1, Node **p2, int sizep1, int sizep2);
-void printGivenLevel(Node* root, int level, int k, int *num);
+void GivenLevel(Node* root, int level, int k, topk *array);
 void printLevelOrder(Node* root, int k);
+void ArrayEntry(topk *array, Node *value);
+void FixArray(topk *array, int i);
+void FixArrayLeftover(topk *array, Node *value);
 
 
 int bal(Node *r);
@@ -21,4 +31,4 @@ void FixInsert(Node *node);
 int check(Node *r);
 void DeleteMaxHeap(Node *p);
 
-#endif //COVID_19_MAXHEAP_H
+#endif

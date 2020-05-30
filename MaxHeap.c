@@ -27,32 +27,77 @@ void swapValues(Node **p1, Node **p2, int sizep1, int sizep2){
 
 }
 
-void printGivenLevel(Node* root, int level, int k, int *num)
+void FixArray(topk *array, int i){
+    if(i == 0){ //if it is the first element
+        return;
+    }
+    if(array->k[i-1]->count >= array->k[i]->count){
+        return;
+    } else { //swap pointers
+        Node *temp = array->k[i-1];
+        array->k[i-1] = array->k[i];
+        array->k[i] = temp;
+    }
+
+    FixArray(array, i-1);
+}
+
+void FixArrayLeftover(topk *array, Node *value){
+    if(array->k[array->current-1]->count < value->count){
+        array->k[array->current-1] = value;
+        FixArray(array, array->current-1);
+    } else {
+        return;
+    }
+}
+
+void ArrayEntry(topk *array, Node *value){
+    if(array->size - 1 != array->current){
+        array->k[array->current] = value;
+        FixArray(array, array->current);
+        array->current++;
+    } else {
+        FixArrayLeftover(array, value);
+    }
+}
+
+void GivenLevel(Node* root, int level, int k, topk *array)
 {
     if (root == NULL)
         return;
     if (level == 1) {
-        if(*num != k) {
-            printf("%d %s\n", root->count, root->value);
-            (*num)++;
-        } else{
-            return;
-        }
+        ArrayEntry(array, root);
     }
     else if (level > 1)
     {
-        printGivenLevel(root->left, level-1, k, num);
-        printGivenLevel(root->right, level-1, k, num);
+        GivenLevel(root->left, level-1, k, array);
+        GivenLevel(root->right, level-1, k, array);
     }
 }
 
 void printLevelOrder(Node* root, int k)
 {
     int level = height(root);
-    int i, num = 0;
-    for (i=1; i<=level; i++) {
-        printGivenLevel(root, i, k, &num);
+    topk *array = malloc(sizeof(topk));
+    array->k = malloc(k* sizeof(Node*));
+    for (int j = 0; j < k; ++j) {
+        array->k[j] = NULL;
     }
+    array->size = k+1;
+    array->current = 0;
+
+    for (int i=1; i<=level; i++) {
+        GivenLevel(root, i, k, array);
+    }
+
+    for (int i = 0; i < array->current; ++i) {
+        if(array->k[i]->count != 0 ){
+            printf("%s %d\n", array->k[i]->value, array->k[i]->count);
+        }
+    }
+
+    free(array->k);
+    free(array);
 }
 
 int  check(Node *r)

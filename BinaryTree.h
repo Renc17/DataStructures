@@ -1,5 +1,5 @@
-#ifndef COVID_19_BINARYTREE_H
-#define COVID_19_BINARYTREE_H
+#ifndef _BINARYTREE_H
+#define _BINARYTREE_H
 
 #include "patientRecords.h"
 
@@ -16,4 +16,4 @@ void countPatients(patientNode *p, char *option, int *count);
 void Delete_Tree(patientNode *p);
 
 
-#endif //COVID_19_BINARYTREE_H
+#endif

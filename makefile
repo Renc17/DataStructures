@@ -27,4 +27,4 @@ MaxHeap : $(Objects)
 	$(CC) $(CFLAGS) MaxHeap.c -o MaxHeap.o -c
 
 clean :
-	rm diseaseMonitor $(Objects)
+	rm -f diseaseMonitor $(Objects)

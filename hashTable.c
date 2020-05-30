@@ -17,7 +17,7 @@ HashTable *InitHashTable(int numOfEntries){
 int hashFunc(char* hashValue,int entries){
     int hash = 0;
     int c;
-    while (c = *hashValue++){
+    while ((c = *hashValue++)){
         hash += c;
     }
     return hash%entries;
@@ -86,7 +86,7 @@ void printHashTable(HashTable* h, int entries){
         if(h[i].buckets != NULL){
             h[i].currentBucket = h[i].buckets;
             do{
-                printf("Backets %d : ", i);
+                printf("Buckets %d : ", i);
                 for (int j = 0; j < (h[i].currentBucket->size / sizeof(Value)); ++j) {
                     if (h[i].currentBucket->value[j].name != NULL){
                         printf("%s\t", h[i].currentBucket->value[j].name);
@@ -149,9 +149,9 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
                     for (int j = 0; j < (h[i].currentBucket->size / sizeof(Value)); ++j) {
                         int count = 0;
                         if (h[i].currentBucket->value[j].name != NULL) {
-                            printf("Number of patiants that have %s  : ", h[i].currentBucket->value[j].name);
+                            printf("%s ", h[i].currentBucket->value[j].name);
                             countPatientsRBTByCountry(h[i].currentBucket->value[j].RBTptr, h[i].currentBucket->value[j].TNILL, &count, date1, date2, NULL);
-                            printf("%d\n", count);
+                            printf("%d", count);
                         }
                         printf("\n");
                     }
@@ -166,7 +166,7 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
             printf("ERROR : Disease %s can not be found in records\n", virus);
             return;
         }
-        printf("Country : %s -> Number of patiants that have %s  : ", country, valueptr.name);
+        printf("%s ", valueptr.name);
         countPatientsRBTByCountry(valueptr.RBTptr, valueptr.TNILL, &count, date1, date2, country);
         printf("%d\n", count);
         return;
@@ -177,7 +177,7 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
             printf("ERROR : Disease %s can not be found in records\n", virus);
             return;
         }
-        printf("Number of patiants that have %s  : ", virus);
+        printf("%s ", virus);
         countPatientsRBTByCountry(valueptr.RBTptr, valueptr.TNILL,&count, date1, date2, NULL);
         printf("%d\n", count);
         return;

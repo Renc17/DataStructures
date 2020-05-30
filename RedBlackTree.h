@@ -1,8 +1,7 @@
-#ifndef COVID_19_REDBLACKTREE_H
-#define COVID_19_REDBLACKTREE_H
+#ifndef _REDBLACKTREE_H
+#define _REDBLACKTREE_H
 
 #include "patientRecords.h"
-#include <time.h>
 
 typedef struct RBTnode
 {
@@ -27,4 +26,4 @@ void countPatientsRBTByCountry(RBT* root, RBT* tn, int *count, char* date1, char
 void countPatientsRBTByDisease(RBT* root, RBT* tn, int *count, char* date1, char* date2, char* virus);
 void countCountryRBT(RBT* root, RBT* tn, int *count, char* date1, char* date2, char* country);
 
-#endif //COVID_19_REDBLACKTREE_H
+#endif

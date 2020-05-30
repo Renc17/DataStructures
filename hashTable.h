@@ -1,5 +1,5 @@
-#ifndef COVID_19_HASHTABLE_H
-#define COVID_19_HASHTABLE_H
+#ifndef _HASHTABLE_H
+#define _HASHTABLE_H
 
 #include "RedBlackTree.h"
 
@@ -33,4 +33,4 @@ void allDiseases(HashTable *h, int entries, char *date1, char* date2, char* coun
 void allDiseasesByCountry(HashTable *h, int entries, char *date1, char* date2, char* virus, int k);
 void allCountriesByDisease(HashTable *h, int entries, char *date1, char* date2, char* country, int k);
 
-#endif //COVID_19_HASHTABLE_H
+#endif

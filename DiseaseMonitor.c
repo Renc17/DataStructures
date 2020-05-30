@@ -18,7 +18,7 @@ void topkCountries(HashTable *h, int entries, char *date1, char* date2, char* vi
     allDiseasesByCountry(h, entries, date1, date2, virus, k);
 }
 
-void insertPatientRecord(patientNode **Root, HashTable **DiseasehashTable, int DiseaseHTCapacity, int bucketsize, int recordId, char* Name, char* SurName, char* diseaseID, char *country, char *entryDate, char *exitDate){
+void insertPatientRecord(patientNode **Root, HashTable **DiseasehashTable, int DiseaseHTCapacity, HashTable **CountryhashTable, int CountryHTCapacity, int bucketsize, int recordId, char* Name, char* SurName, char* diseaseID, char *country, char *entryDate, char *exitDate){
     patientRecord* patient = initialize();
 
     set_id(patient, recordId);
@@ -42,20 +42,25 @@ void insertPatientRecord(patientNode **Root, HashTable **DiseasehashTable, int D
 
     NewPatient(Root, patient);
     insertPatientHT(*DiseasehashTable, get_disease(patient), DiseaseHTCapacity, bucketsize, patient);
+    insertPatientHT(*CountryhashTable, get_disease(patient), CountryHTCapacity, bucketsize, patient);
+    printf("Record added\n");
 }
 
 void recordPatientExit(patientNode* root, int recordId, char* exitDate) {
     patientNode *temp = root;
     temp = FindPatient(temp, recordId);
     if(temp == NULL){
-        printf("ERROR : Patient with recordId %d does not exist in records\n", recordId);
+        printf("Not found\n");
         return;
     }
     if (strcmp(get_exitDate(temp->patient), "-") == 0) {
+        free(temp->patient->exitDate);
+        temp->patient->exitDate = malloc(sizeof(char)* strlen(exitDate)+1);
         set_exitDate(temp->patient, exitDate);
-        printf("Update : Patient %s is out\n", get_name(temp->patient));
-    }else{
-        printf("Patient has already an exitDate\n");
+        printf("Record updated\n");
+    }else {
+        set_exitDate(temp->patient, exitDate);
+        printf("Record updated\n");
     }
 }
 
@@ -80,4 +85,5 @@ void Exit(patientNode **Root, HashTable *hashTable, int entries, HashTable *Coun
     Delete_Tree(*Root);
     DestroyHashTable(hashTable, entries);
     DestroyHashTable(CountryhashTable, countryEntries);
+    printf("exiting\n");
 }

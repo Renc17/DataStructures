@@ -14,9 +14,9 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
 int main(int argc, char** argv){
 
     char *patientRecordsFile = NULL;
-    int diseaseHashtableNumOfEntries = 50;
-    int countryHashtableNumOfEntries = 50;
-    int bucketSize = 40;
+    int diseaseHashtableNumOfEntries = 0;
+    int countryHashtableNumOfEntries = 0;
+    int bucketSize = 0;
 
     int i=0;
     while(argv[i] != NULL && strcmp(argv[i], "-p") != 0){
@@ -42,10 +42,6 @@ int main(int argc, char** argv){
     }
     bucketSize = atoi(argv[i+1]);
 
-    diseaseHashtableNumOfEntries = 50;
-    countryHashtableNumOfEntries = 50;
-    bucketSize = 40;
-
     Options(patientRecordsFile, diseaseHashtableNumOfEntries, countryHashtableNumOfEntries, bucketSize);
 }
 
@@ -64,11 +60,11 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
     buffer = malloc(sizeof(char) * bufsize);
 
     while (1) {
-        printf("> ");
+        //printf("> ");
         getline(&buffer, &bufsize, stdin);
         strtok(buffer, "\n");
         token = strtok(buffer, skip);
-        if (strcmp(token, "globalDiseaseStats") == 0) {
+        if (strcmp(token, "/globalDiseaseStats") == 0) {
             token = strtok(NULL, skip);
             if (token != NULL) {
                 char *date1 = malloc(sizeof(char)*strlen(token)+1);
@@ -90,7 +86,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
                 globalDiseaseStats(DiseasehashTable, DiseaseHTCapacity, NULL, NULL, NULL, NULL);
             }
             continue;
-        }else if (strcmp(token, "diseaseFrequency") == 0) {
+        }else if (strcmp(token, "/diseaseFrequency") == 0) {
             token = strtok(NULL, skip);
             if (token == NULL) {
                 printf("Input Error : Disease Name must be entered\n");
@@ -135,7 +131,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
                 free(date2);
                 continue;
             }
-        } else if (strcmp(token, "topkDiseases") == 0) {
+        } else if (strcmp(token, "/topk-Diseases") == 0) {
             token = strtok(NULL, skip);
             if (token == NULL) {
                 printf("Input Error : Enter rank number\n");
@@ -173,7 +169,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
             topkDiseases(DiseasehashTable, DiseaseHTCapacity, NULL, NULL, country, k);
             free(country);
             continue;
-        }else if (strcmp(token, "topkCountries") == 0) {
+        }else if (strcmp(token, "/topk-Countries") == 0) {
             token = strtok(NULL, skip);
             if (token == NULL) {
                 printf("Input Error : Enter rank number\n");
@@ -212,7 +208,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
             topkCountries(CountryhashTable, CountryHTCapacity,NULL, NULL, disease, k);
             free(disease);
             continue;
-        }else if (strcmp(token, "insertPatientRecord") == 0) {
+        }else if (strcmp(token, "/insertPatientRecord") == 0) {
             token = strtok(NULL, skip);
             if (token == NULL) {
                 printf("Input Error : RecordId must be entered\n");
@@ -278,7 +274,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
                 strcpy(exitDate, token);
             }
 
-            insertPatientRecord(&Root, &DiseasehashTable, DiseaseHTCapacity, bucketsize, recordId, Name, SurName, diseaseID, country, entryDate, exitDate);
+            insertPatientRecord(&Root, &DiseasehashTable, DiseaseHTCapacity, &CountryhashTable, CountryHTCapacity, bucketsize, recordId, Name, SurName, diseaseID, country, entryDate, exitDate);
 
             free(Name);
             free(SurName);
@@ -287,7 +283,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
             free(entryDate);
             free(exitDate);
             continue;
-        }else if (strcmp(token, "recordPatientExit") == 0) {
+        }else if (strcmp(token, "/recordPatientExit") == 0) {
             token = strtok(NULL, skip);
             if (token == NULL) {
                 printf("Input Error : RecordId must be entered\n");
@@ -307,7 +303,7 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
 
             free(exitDate);
             continue;
-        }else if (strcmp(token, "numCurrentPatients") == 0) {
+        }else if (strcmp(token, "/numCurrentPatients") == 0) {
             token = strtok(NULL, skip);
 
             if (token == NULL) {
@@ -321,10 +317,12 @@ void Options(char *patientFile, int DiseaseHTCapacity, int CountryHTCapacity, in
                 free(disease);
                 continue;
             }
-        }else if (strcmp(token, "Exit") == 0) {
+        }else if (strcmp(token, "/exit") == 0) {
             Exit(&Root, DiseasehashTable, DiseaseHTCapacity, CountryhashTable, CountryHTCapacity);
             free(buffer);
             return;
+        }else{
+            printf("Error\n");
         }
     }
 }
@@ -381,7 +379,7 @@ void Init(char* PatientFile, patientNode **Root, HashTable **DiseasehashTable, i
     free(buffer);
     fclose(fd);
 
-    printHashTable(*DiseasehashTable, DiseaseHTCapacity);
-    printHashTable(*CountryhashTable, CountryHTCapacity);
+    //printHashTable(*DiseasehashTable, DiseaseHTCapacity);
+    //printHashTable(*CountryhashTable, CountryHTCapacity);
     //Print_Tree(*Root);
 }

@@ -1,8 +1,8 @@
 #include "RedBlackTree.h"
+#include "patientRecords.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "patientRecords.h"
 
 
 RBT* init(){
@@ -226,7 +226,7 @@ void countCurrentPatientsRBT(RBT* root, RBT* tn, int *count){
     countCurrentPatientsRBT(root->right, tn,  count);
 }
 
-Date convert(char *date){
+Date convert(char *date){   //convert date from char to int and store it into a Date struct
     char* token;
     char skip[2] = "-";
 
@@ -241,6 +241,7 @@ Date convert(char *date){
     token = strtok(NULL, skip);
     ed.year = atoi(token);
 
+    free(d);
     return ed;
 }
 
